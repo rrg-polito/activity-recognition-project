@@ -1,0 +1,18 @@
+<package>
+  <description brief="SVM_training_and_testing_package">
+
+     SVM_training_and_testing_package
+
+  </description>
+  <author>latifanjum</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/SVM_training_and_testing_package</url>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+<depend package="opencv2"/>
+
+</package>
+
+

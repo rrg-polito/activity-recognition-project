@@ -1,0 +1,52 @@
+#include <opencv2/opencv.hpp>
+#include <XnCppWrapper.h>
+//#pragma comment(lib,"C:/Program files/OpenNI/Lib/openNI.lib")
+
+//#define SAMPLE_XML_PATH "C:/Program Files/OpenNI/Data/SamplesConfig.xml"
+using namespace cv;
+using namespace xn;
+
+int main()
+{
+	Context context;
+	EnumerationErrors errors;
+
+	context.InitFromXmlFile(SAMPLE_XML_PATH);
+	
+	DepthGenerator depth;// depth context
+	context.FindExistingNode(XN_NODE_TYPE_DEPTH, depth);
+	
+	ImageGenerator image;//image context
+	context.FindExistingNode(XN_NODE_TYPE_IMAGE, image);
+
+	DepthMetaData depthMD;
+	ImageMetaData imageMD;
+
+	Mat depthshow;
+	Mat show;
+	int key = 0;
+	bool isWarp=false;
+	while (key!='q')
+	{
+		//wait and error processing 
+		context.WaitAnyUpdateAll();
+
+		image.GetMetaData(imageMD);
+		depth.GetMetaData(depthMD);
+				
+		//for opencv Mat
+                Mat depth16(480,640,CV_16SC1,(unsigned short*)depthMD.WritableData());
+		Mat imni(480,640,CV_8UC3,(uchar*)imageMD.WritableData());
+		
+		//convert color space RGB2BGR
+		cvtColor(imni,show,CV_RGB2BGR);		
+		//convert depth 11 bit image 2 8 bit image
+		depth16.convertTo(depthshow,CV_8U,-255/4096.0,255);
+
+		imshow("depth",depthshow);
+		imshow("image",show);
+		key = waitKey(33);
+	}
+	context.Shutdown();
+	return 0;
+}
